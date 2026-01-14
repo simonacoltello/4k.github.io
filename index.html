@@ -155,11 +155,34 @@ html, body {
   z-index: 9999;
 }
 
+/* --- 7. WIDGET simona 50% E DRAGGABLE --- */
+#widget-simona {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 500px; /* 50% */
+  z-index: 1500;
+  pointer-events: auto;
+  cursor: move;
+}
+#widget-simona img { width: 100%; display: block; }
+#widget-simona video {
+  position: absolute;
+  top: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 79px;
+  height: 92.5px;
+  object-fit: cover;
+  border-radius: 13px;
+  z-index: 2;
+  filter: contrast(1.05) brightness(0.95);
+}
+
 /* --- 7. WIDGET DOG 50% E DRAGGABLE --- */
 #widget-dog {
   position: fixed;
   bottom: 30px;
-  right: 30px;
   width: 130px; /* 50% */
   z-index: 1500;
   pointer-events: auto;
@@ -215,6 +238,24 @@ html, body {
   <div onclick="openProject('specific')">Specific</div>
   <div onclick="openProject('pessima')">Pessima</div>
   <div onclick="openProject('people')">People Of Meat</div>
+    <div onclick="openProject('slamjam')">Slam Jam</div>
+  <div onclick="openProject('nike')">Nike</div>
+  <div onclick="openProject('magliano')">Magliano</div>
+  <div onclick="openProject('hglf')">HGLF</div>
+  <div onclick="openProject('trashgirls')">TrashGirls8000</div>
+  <div onclick="openProject('amsterdam')">Amsterdam Junglist Kru</div>
+  <div onclick="openProject('sperm')">Sperm Studios</div>
+  <div onclick="openProject('dysphoria')">Dysphoria</div>
+  <div onclick="openProject('autostraddle')">Autostraddle</div>
+  <div onclick="openProject('forthem')">For Them</div>
+  <div onclick="openProject('hundebiss')">Hundebiss</div>
+  <div onclick="openProject('cellula')">Cellula</div>
+  <div onclick="openProject('robot')">Robot Festival</div>
+  <div onclick="openProject('bim')">Bim Milano</div>
+  <div onclick="openProject('sozzani')">Fondazione Sozzani</div>
+  <div onclick="openProject('specific')">Specific</div>
+  <div onclick="openProject('pessima')">Pessima</div>
+  <div onclick="openProject('people')">People Of Meat</div>
 </div>
 
 <!-- MODAL -->
@@ -240,6 +281,14 @@ html, body {
 <!-- WIDGET DOG -->
 <div id="widget-dog">
   <img src="assets/Widgets/widgetdog.png" alt="Widget Dog">
+  <video autoplay muted loop playsinline>
+    <source src="widgetvideo.mp4" type="video/mp4">
+  </video>
+</div>
+
+<!-- WIDGET simona -->
+<div id="widget-simona">
+  <img src="assets/Widgets/4K WIDGET BY SIMONA.png" alt="Widget Simona">
   <video autoplay muted loop playsinline>
     <source src="widgetvideo.mp4" type="video/mp4">
   </video>
@@ -340,24 +389,47 @@ document.getElementById('link-about').addEventListener('click', () => {
   scrollContainer.style.visibility = 'hidden';
 });
 
-// --- DRAG WIDGET DOG ---
-const widget = document.getElementById('widget-dog');
-let isDragging = false, offsetX = 0, offsetY = 0;
+// --- DRAG WIDGET SIMONA ---
+const widgetSimona = document.getElementById('widget-simona');
+let isDraggingSimona = false, offsetXSimona = 0, offsetYSimona = 0;
 
-widget.addEventListener('mousedown', e => {
-  isDragging = true;
-  offsetX = e.clientX - widget.offsetLeft;
-  offsetY = e.clientY - widget.offsetTop;
-  widget.style.transition = 'none';
+widgetSimona.addEventListener('mousedown', e => {
+  isDraggingSimona = true;
+  offsetXSimona = e.clientX - widgetSimona.offsetLeft;
+  offsetYSimona = e.clientY - widgetSimona.offsetTop;
+  widgetSimona.style.transition = 'none';
 });
 
 document.addEventListener('mousemove', e => {
-  if (!isDragging) return;
-  widget.style.left = e.clientX - offsetX + 'px';
-  widget.style.top = e.clientY - offsetY + 'px';
+  if (!isDraggingSimona) return;
+  widgetSimona.style.left = e.clientX - offsetXSimona + 'px';
+  widgetSimona.style.top = e.clientY - offsetYSimona + 'px';
 });
 
-document.addEventListener('mouseup', () => isDragging = false);
+document.addEventListener('mouseup', () => isDraggingSimona = false);
+
+// --- DRAG WIDGET DOG ---
+const widgetDog = document.getElementById('widget-dog');
+let isDraggingDog = false, offsetXDog = 0, offsetYDog = 0;
+
+// Start widget dog on the left
+widgetDog.style.left = '30px';
+widgetDog.style.bottom = '30px';
+
+widgetDog.addEventListener('mousedown', e => {
+  isDraggingDog = true;
+  offsetXDog = e.clientX - widgetDog.offsetLeft;
+  offsetYDog = e.clientY - widgetDog.offsetTop;
+  widgetDog.style.transition = 'none';
+});
+
+document.addEventListener('mousemove', e => {
+  if (!isDraggingDog) return;
+  widgetDog.style.left = e.clientX - offsetXDog + 'px';
+  widgetDog.style.top = e.clientY - offsetYDog + 'px';
+});
+
+document.addEventListener('mouseup', () => isDraggingDog = false);
 </script>
 
 </body>
