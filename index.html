@@ -154,6 +154,30 @@ html, body {
   transition: transform 2s ease-in, opacity 2s ease-in;
   z-index: 9999;
 }
+
+/* --- 7. WIDGET DOG 50% E DRAGGABLE --- */
+#widget-dog {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 130px; /* 50% */
+  z-index: 1500;
+  pointer-events: auto;
+  cursor: move;
+}
+#widget-dog img { width: 100%; display: block; }
+#widget-dog video {
+  position: absolute;
+  top: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 79px;
+  height: 92.5px;
+  object-fit: cover;
+  border-radius: 13px;
+  z-index: 2;
+  filter: contrast(1.05) brightness(0.95);
+}
 </style>
 </head>
 
@@ -211,6 +235,14 @@ html, body {
       <div id="modal-gallery"></div>
     </div>
   </div>
+</div>
+
+<!-- WIDGET DOG -->
+<div id="widget-dog">
+  <img src="assets/Widgets/widgetdog.png" alt="Widget Dog">
+  <video autoplay muted loop playsinline>
+    <source src="widgetvideo.mp4" type="video/mp4">
+  </video>
 </div>
 
 <script>
@@ -307,6 +339,25 @@ document.getElementById('link-about').addEventListener('click', () => {
 
   scrollContainer.style.visibility = 'hidden';
 });
+
+// --- DRAG WIDGET DOG ---
+const widget = document.getElementById('widget-dog');
+let isDragging = false, offsetX = 0, offsetY = 0;
+
+widget.addEventListener('mousedown', e => {
+  isDragging = true;
+  offsetX = e.clientX - widget.offsetLeft;
+  offsetY = e.clientY - widget.offsetTop;
+  widget.style.transition = 'none';
+});
+
+document.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  widget.style.left = e.clientX - offsetX + 'px';
+  widget.style.top = e.clientY - offsetY + 'px';
+});
+
+document.addEventListener('mouseup', () => isDragging = false);
 </script>
 
 </body>
