@@ -90,7 +90,7 @@ html, body {
   display: flex; 
   position: relative;
   box-shadow: 0 0 50px rgba(0,0,0,1);
-  overflow: hidden; /* Fondamentale per far toccare i bordi */
+  overflow: hidden;
 }
 
 .modal-image-side { 
@@ -120,14 +120,14 @@ html, body {
 #modal-gallery {
   display: flex;
   width: 100%; 
-  height: 110px; /* Altezza gallery */
+  height: 110px; 
   border-top: 1px solid #333;
   margin: 0; 
   padding: 0;
 }
 
 #modal-gallery img {
-  width: 25%; /* 4 foto = 100% */
+  width: 25%; 
   height: 100%;
   object-fit: cover;
   cursor: pointer;
@@ -143,6 +143,17 @@ html, body {
 .green { background: #27c93f; }
 .yellow { background: #ffbd2e; }
 .red { background: #ff5f56; cursor: pointer; }
+
+/* --- 6. CADUTA LETTERE ABOUT --- */
+.fall-letter {
+  position: absolute;
+  color: #fff;
+  font-size: 14px;
+  pointer-events: none;
+  opacity: 1;
+  transition: transform 2s ease-in, opacity 2s ease-in;
+  z-index: 9999;
+}
 </style>
 </head>
 
@@ -155,28 +166,10 @@ html, body {
 
 <div id="top">
   <div id="logo"><img src="assets/logo/logo4k.svg" alt="4K Logo"></div>
-  <div>Works &nbsp; About &nbsp; Contact &nbsp; Cellula</div>
+  <div>Works &nbsp; <span id="link-about" style="cursor:pointer;">About</span> &nbsp; Contact &nbsp; Cellula</div>
 </div>
 
 <div id="scroll">
-  <div onclick="openProject('slamjam')">Slam Jam</div>
-  <div onclick="openProject('nike')">Nike</div>
-  <div onclick="openProject('magliano')">Magliano</div>
-  <div onclick="openProject('hglf')">HGLF</div>
-  <div onclick="openProject('trashgirls')">TrashGirls8000</div>
-  <div onclick="openProject('amsterdam')">Amsterdam Junglist Kru</div>
-  <div onclick="openProject('sperm')">Sperm Studios</div>
-  <div onclick="openProject('dysphoria')">Dysphoria</div>
-  <div onclick="openProject('autostraddle')">Autostraddle</div>
-  <div onclick="openProject('forthem')">For Them</div>
-  <div onclick="openProject('hundebiss')">Hundebiss</div>
-  <div onclick="openProject('cellula')">Cellula</div>
-  <div onclick="openProject('robot')">Robot Festival</div>
-  <div onclick="openProject('bim')">Bim Milano</div>
-  <div onclick="openProject('sozzani')">Fondazione Sozzani</div>
-  <div onclick="openProject('specific')">Specific</div>
-  <div onclick="openProject('pessima')">Pessima</div>
-  <div onclick="openProject('people')">People Of Meat</div>
   <div onclick="openProject('slamjam')">Slam Jam</div>
   <div onclick="openProject('nike')">Nike</div>
   <div onclick="openProject('magliano')">Magliano</div>
@@ -247,9 +240,6 @@ function openProject(id) {
   const gallery = document.getElementById('modal-gallery');
   gallery.innerHTML = "";
   
-  mainImg.src = project.imgs[0];
-  
-  // Prende esattamente 4 foto
   project.imgs.slice(0, 4).forEach((src) => {
     const thumb = document.createElement('img');
     thumb.src = src;
@@ -263,6 +253,63 @@ function openProject(id) {
 function closeProject() {
   document.getElementById('project-modal').style.display = 'none';
 }
+
+/* --- ANIMAZIONE LETTERE CADENTI PERFETTA --- */
+document.getElementById('link-about').addEventListener('click', () => {
+  const scrollContainer = document.getElementById('scroll');
+  const divs = Array.from(scrollContainer.querySelectorAll('div'));
+
+  divs.forEach(div => {
+    const text = div.innerText;
+
+    // Nascondiamo il div originale
+    div.style.visibility = 'hidden';
+
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      if (char === ' ') continue;
+
+      // Creiamo un range per prendere la posizione esatta del carattere
+      const range = document.createRange();
+      range.setStart(div.firstChild, i);
+      range.setEnd(div.firstChild, i + 1);
+      const rect = range.getBoundingClientRect();
+
+      // Creiamo span per la lettera
+      const span = document.createElement('span');
+      span.className = 'fall-letter';
+      span.innerText = char;
+
+      // Copiamo lo stile
+      const style = window.getComputedStyle(div);
+      span.style.font = style.font;
+      span.style.color = style.color;
+      span.style.fontWeight = style.fontWeight;
+
+      // Posizione precisa
+      span.style.left = rect.left + 'px';
+      span.style.top = rect.top + 'px';
+
+      document.body.appendChild(span);
+
+      // Caduta casuale
+      const xVel = (Math.random() - 0.5) * 200;  // movimento orizzontale casuale
+      const yVel = 600 + Math.random() * 200;    // caduta verticale
+      const rot = (Math.random() - 0.5) * 720;   // rotazione
+
+      setTimeout(() => {
+        span.style.transform = `translate(${xVel}px, ${yVel}px) rotate(${rot}deg)`;
+        span.style.opacity = 0;
+      }, Math.random() * 200);
+
+      setTimeout(() => span.remove(), 2500);
+    }
+  });
+
+  // Nascondiamo il container originale
+  scrollContainer.style.visibility = 'hidden';
+});
+
 </script>
 
 </body>
