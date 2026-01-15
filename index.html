@@ -14,6 +14,15 @@ html, body {
   font-family: 'Roboto', Helvetica, Arial, sans-serif;
   height: 100%; width: 100%;
   overflow: hidden !important;
+  cursor: url("assets/Cursors/Pistolidle.png"), auto;
+}
+
+body.charging {
+  cursor: url("assets/Cursors/strongcharge.png"), pointer;
+}
+
+body.firing {
+  cursor: url("assets/Cursors/strongfire.png"), pointer;
 }
 
 /* --- 2. BACKGROUND & FADE --- */
@@ -442,6 +451,29 @@ html, body {
 </div>
 
 <script>
+// --- CURSOR STATES ---
+let isMouseDown = false;
+let fireTimeout;
+
+document.addEventListener('mousedown', () => {
+  isMouseDown = true;
+  document.body.classList.remove('firing');
+  document.body.classList.add('charging');
+  
+  fireTimeout = setTimeout(() => {
+    if (isMouseDown) {
+      document.body.classList.remove('charging');
+      document.body.classList.add('firing');
+    }
+  }, 200);
+});
+
+document.addEventListener('mouseup', () => {
+  isMouseDown = false;
+  clearTimeout(fireTimeout);
+  document.body.classList.remove('charging', 'firing');
+});
+
 // --- PROGETTI ---
 const projectsData = {
   'slamjam': {
@@ -630,8 +662,10 @@ document.addEventListener('click', (e) => {
 });
 
 // --- AUDIO PLAYER ---
-const audio = new Audio('assets/Music/04 - Carousel.mp3');
+const audio = new Audio('assets/Music/Sonia Whittingham - Sweet Sensation.mp3');
 let isPlaying = false;
+
+const barkingAudio = new Audio('assets/Music/barking.mp3');
 
 // --- DRAG WIDGET SIMONA ---
 const widgetSimona = document.getElementById('widget-simona');
@@ -694,12 +728,22 @@ document.addEventListener('mouseup', () => {
 // --- DRAG WIDGET DOG ---
 const widgetDog = document.getElementById('widget-dog');
 let isDraggingDog = false, offsetXDog = 0, offsetYDog = 0;
+let hasMovedDog = false;
 
 widgetDog.style.left = '30px';
 widgetDog.style.bottom = '30px';
 
+widgetDog.addEventListener('click', (e) => {
+  if (!hasMovedDog) {
+    barkingAudio.currentTime = 0;
+    barkingAudio.play();
+  }
+  hasMovedDog = false;
+});
+
 widgetDog.addEventListener('mousedown', e => {
   isDraggingDog = true;
+  hasMovedDog = false;
   offsetXDog = e.clientX - widgetDog.getBoundingClientRect().left;
   offsetYDog = e.clientY - widgetDog.getBoundingClientRect().top;
   widgetDog.style.transition = 'none';
@@ -708,6 +752,7 @@ widgetDog.addEventListener('mousedown', e => {
 
 document.addEventListener('mousemove', e => {
   if (!isDraggingDog) return;
+  hasMovedDog = true;
   e.preventDefault();
   widgetDog.style.left = e.clientX - offsetXDog + 'px';
   widgetDog.style.top = e.clientY - offsetYDog + 'px';
