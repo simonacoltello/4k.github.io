@@ -13,7 +13,7 @@ html, body {
   color: #535353; 
   font-family: 'Roboto', Helvetica, Arial, sans-serif;
   height: 100%; width: 100%;
-  overflow: hidden !important; 
+  overflow: hidden !important;
 }
 
 /* --- 2. BACKGROUND & FADE --- */
@@ -147,23 +147,25 @@ html, body {
 /* --- 6. CADUTA LETTERE ABOUT --- */
 .fall-letter {
   position: absolute;
-  color: #fff;
+  color: #535353;
   font-size: 14px;
   pointer-events: none;
-  opacity: 1;
-  transition: transform 2s ease-in, opacity 2s ease-in;
   z-index: 9999;
 }
 
 /* --- 7. WIDGET simona 50% E DRAGGABLE --- */
 #widget-simona {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 500px; /* 50% */
+  bottom: 250px;
+  left: 30px;
+  width: 500px;
   z-index: 1500;
   pointer-events: auto;
-  cursor: move;
+  cursor: pointer;
+  transition: filter 0.1s;
+}
+#widget-simona:hover {
+  filter: hue-rotate(180deg) saturate(1.5);
 }
 #widget-simona img { width: 100%; display: block; }
 #widget-simona video {
@@ -177,16 +179,45 @@ html, body {
   border-radius: 13px;
   z-index: 2;
   filter: contrast(1.05) brightness(0.95);
+  pointer-events: none;
 }
 
-/* --- 7. WIDGET DOG 50% E DRAGGABLE --- */
+/* Play button area (triangolo play) */
+#widget-simona .play-area {
+  position: absolute;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  z-index: 3;
+}
+
+/* Stop button area (quadrato stop) */
+#widget-simona .stop-area {
+  position: absolute;
+  top: 108px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  z-index: 3;
+}
+
+/* --- 8. WIDGET DOG 50% E DRAGGABLE --- */
 #widget-dog {
   position: fixed;
   bottom: 30px;
-  width: 130px; /* 50% */
+  width: 130px;
   z-index: 1500;
   pointer-events: auto;
   cursor: move;
+  transition: filter 0.1s;
+}
+#widget-dog:hover {
+  filter: hue-rotate(90deg) saturate(2);
 }
 #widget-dog img { width: 100%; display: block; }
 #widget-dog video {
@@ -200,6 +231,94 @@ html, body {
   border-radius: 13px;
   z-index: 2;
   filter: contrast(1.05) brightness(0.95);
+}
+
+/* --- 9. FINESTRE RISOLUZIONI --- */
+.resolution-window {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  border: 1px solid;
+  background: #000;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0,0,0,0.8);
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.resolution-window.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.resolution-label {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 10px;
+  color: #888;
+  background: rgba(0,0,0,0.7);
+  padding: 2px 5px;
+  border-radius: 3px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+#window-4k { 
+  display: none;
+  top: 0;
+  left: 0;
+  width: 100vw; 
+  height: 100vh; 
+  border-color: #ff0000; 
+  border-width: 1px; 
+  z-index: 899; 
+}
+
+#window-1080p { 
+  display: none;
+  width: 720px; 
+  height: 405px; 
+  border-color: #ff0000; 
+  border-width: 1px; 
+  z-index: 1000; 
+}
+
+#window-720p { 
+  display: none;
+  width: 480px; 
+  height: 270px; 
+  border-color: #ff0000; 
+  border-width: 1px; 
+  z-index: 1100; 
+}
+
+#window-dvd { 
+  display: none;
+  width: 320px; 
+  height: 180px; 
+  border-color: #ff0000; 
+  border-width: 1px; 
+  z-index: 1200; 
+}
+
+#window-vcd { 
+  display: block;
+  width: 210px; 
+  height: 118px; 
+  border-color: #ff0000; 
+  border-width: 1px; 
+  z-index: 1600; 
+  opacity: 1;
+  transform: scale(1);
+}
+
+.resolution-window iframe { 
+  width: 100%; height: 100%; 
+  border: none; 
+  pointer-events: none; 
 }
 </style>
 </head>
@@ -238,7 +357,7 @@ html, body {
   <div onclick="openProject('specific')">Specific</div>
   <div onclick="openProject('pessima')">Pessima</div>
   <div onclick="openProject('people')">People Of Meat</div>
-    <div onclick="openProject('slamjam')">Slam Jam</div>
+  <div onclick="openProject('slamjam')">Slam Jam</div>
   <div onclick="openProject('nike')">Nike</div>
   <div onclick="openProject('magliano')">Magliano</div>
   <div onclick="openProject('hglf')">HGLF</div>
@@ -292,6 +411,34 @@ html, body {
   <video autoplay muted loop playsinline>
     <source src="widgetvideo.mp4" type="video/mp4">
   </video>
+  <div class="play-area"></div>
+  <div class="stop-area"></div>
+</div>
+
+<!-- FINESTRE RISOLUZIONI -->
+<div id="window-4k" class="resolution-window">
+  <div class="resolution-label">4K</div>
+  <iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;background:#000;overflow:hidden;width:100vw;height:100vh}</style></head><body><video autoplay muted loop playsinline style='width:100%;height:100%;object-fit:cover;image-rendering:crisp-edges'><source src='assets/Video/beeonflower.mp4' type='video/mp4'></video></body></html>"></iframe>
+</div>
+
+<div id="window-1080p" class="resolution-window">
+  <div class="resolution-label">1080p</div>
+  <iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;background:#000;overflow:hidden}</style></head><body><video autoplay muted loop playsinline style='width:100%;height:100%;object-fit:cover'><source src='assets/Video/beeonflower.mp4' type='video/mp4'></video></body></html>"></iframe>
+</div>
+
+<div id="window-720p" class="resolution-window">
+  <div class="resolution-label">720p</div>
+  <iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;background:#000;overflow:hidden}</style></head><body><video autoplay muted loop playsinline style='width:100%;height:100%;object-fit:cover'><source src='assets/Video/beeonflower.mp4' type='video/mp4'></video></body></html>"></iframe>
+</div>
+
+<div id="window-dvd" class="resolution-window">
+  <div class="resolution-label">DVD</div>
+  <iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;background:#000;overflow:hidden}</style></head><body><video autoplay muted loop playsinline style='width:100%;height:100%;object-fit:cover;filter:blur(0.5px)'><source src='assets/Video/beeonflower.mp4' type='video/mp4'></video></body></html>"></iframe>
+</div>
+
+<div id="window-vcd" class="resolution-window">
+  <div class="resolution-label">VCD</div>
+  <iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;background:#000;overflow:hidden}</style></head><body><video autoplay muted loop playsinline style='width:100%;height:100%;object-fit:cover;filter:blur(1px)'><source src='assets/Video/beeonflower.mp4' type='video/mp4'></video></body></html>"></iframe>
 </div>
 
 <script>
@@ -326,6 +473,8 @@ function openProject(id) {
   const mainImg = document.getElementById('modal-main-img');
   const gallery = document.getElementById('modal-gallery');
   gallery.innerHTML = "";
+  
+  mainImg.src = project.imgs[0];
   
   project.imgs.slice(0, 4).forEach(src => {
     const thumb = document.createElement('img');
@@ -373,63 +522,201 @@ document.getElementById('link-about').addEventListener('click', () => {
 
       document.body.appendChild(span);
 
-      const xVel = (Math.random() - 0.5) * 200;
-      const yVel = 600 + Math.random() * 200;
-      const rot = (Math.random() - 0.5) * 720;
-
-      setTimeout(() => {
-        span.style.transform = `translate(${xVel}px, ${yVel}px) rotate(${rot}deg)`;
-        span.style.opacity = 0;
-      }, Math.random() * 200);
-
-      setTimeout(() => span.remove(), 2500);
+      let posY = rect.top;
+      let posX = rect.left;
+      let velocityY = 0;
+      let velocityX = (Math.random() - 0.5) * 1.5;
+      let rotation = 0;
+      let rotationSpeed = (Math.random() - 0.5) * 8;
+      const gravity = 0.3;
+      
+      const animate = () => {
+        velocityY += gravity;
+        posY += velocityY;
+        posX += velocityX;
+        rotation += rotationSpeed;
+        
+        span.style.top = posY + 'px';
+        span.style.left = posX + 'px';
+        span.style.transform = `rotate(${rotation}deg)`;
+        
+        if (posY < window.innerHeight + 100) {
+          requestAnimationFrame(animate);
+        } else {
+          span.remove();
+        }
+      };
+      
+      setTimeout(() => requestAnimationFrame(animate), Math.random() * 100);
     }
   });
 
   scrollContainer.style.visibility = 'hidden';
 });
 
+// --- CLICK RESOLUTION WINDOWS ---
+let resolutionsOpen = false;
+
+// Apri solo cliccando su VCD
+document.getElementById('window-vcd').addEventListener('click', (e) => {
+  e.stopPropagation();
+  
+  if (!resolutionsOpen) {
+    // Widget vanno sotto
+    widgetSimona.style.zIndex = '800';
+    widgetDog.style.zIndex = '800';
+    
+    // Apri tutte le finestre con animazione fluida
+    const dvd = document.getElementById('window-dvd');
+    const w720 = document.getElementById('window-720p');
+    const w1080 = document.getElementById('window-1080p');
+    const w4k = document.getElementById('window-4k');
+    
+    dvd.style.display = 'block';
+    setTimeout(() => dvd.classList.add('visible'), 10);
+    
+    setTimeout(() => {
+      w720.style.display = 'block';
+      setTimeout(() => w720.classList.add('visible'), 10);
+    }, 150);
+    
+    setTimeout(() => {
+      w1080.style.display = 'block';
+      setTimeout(() => w1080.classList.add('visible'), 10);
+    }, 300);
+    
+    setTimeout(() => {
+      w4k.style.display = 'block';
+      setTimeout(() => w4k.classList.add('visible'), 10);
+    }, 450);
+    
+    resolutionsOpen = true;
+  }
+});
+
+// Chiudi cliccando ovunque (tranne su VCD)
+document.addEventListener('click', (e) => {
+  if (resolutionsOpen && !e.target.closest('#window-vcd')) {
+    // Widget tornano sopra
+    widgetSimona.style.zIndex = '1500';
+    widgetDog.style.zIndex = '1500';
+    
+    // Chiudi con animazione inversa
+    const w4k = document.getElementById('window-4k');
+    const w1080 = document.getElementById('window-1080p');
+    const w720 = document.getElementById('window-720p');
+    const dvd = document.getElementById('window-dvd');
+    
+    w4k.classList.remove('visible');
+    setTimeout(() => w4k.style.display = 'none', 400);
+    
+    setTimeout(() => {
+      w1080.classList.remove('visible');
+      setTimeout(() => w1080.style.display = 'none', 400);
+    }, 150);
+    
+    setTimeout(() => {
+      w720.classList.remove('visible');
+      setTimeout(() => w720.style.display = 'none', 400);
+    }, 300);
+    
+    setTimeout(() => {
+      dvd.classList.remove('visible');
+      setTimeout(() => dvd.style.display = 'none', 400);
+    }, 450);
+    
+    resolutionsOpen = false;
+  }
+});
+
+// --- AUDIO PLAYER ---
+const audio = new Audio('assets/Music/04 - Carousel.mp3');
+let isPlaying = false;
+
 // --- DRAG WIDGET SIMONA ---
 const widgetSimona = document.getElementById('widget-simona');
 let isDraggingSimona = false, offsetXSimona = 0, offsetYSimona = 0;
+let hasMoved = false;
+
+const playArea = widgetSimona.querySelector('.play-area');
+const stopArea = widgetSimona.querySelector('.stop-area');
+
+// Click sul widget intero per play/pause
+widgetSimona.addEventListener('click', (e) => {
+  if (!hasMoved && !e.target.classList.contains('play-area') && !e.target.classList.contains('stop-area')) {
+    if (isPlaying) {
+      audio.pause();
+      isPlaying = false;
+    } else {
+      audio.play();
+      isPlaying = true;
+    }
+  }
+  hasMoved = false;
+});
+
+playArea.addEventListener('click', (e) => {
+  e.stopPropagation();
+  audio.play();
+  isPlaying = true;
+});
+
+stopArea.addEventListener('click', (e) => {
+  e.stopPropagation();
+  audio.pause();
+  audio.currentTime = 0;
+  isPlaying = false;
+});
 
 widgetSimona.addEventListener('mousedown', e => {
+  if (e.target.classList.contains('play-area') || e.target.classList.contains('stop-area')) return;
   isDraggingSimona = true;
-  offsetXSimona = e.clientX - widgetSimona.offsetLeft;
-  offsetYSimona = e.clientY - widgetSimona.offsetTop;
+  hasMoved = false;
+  offsetXSimona = e.clientX - widgetSimona.getBoundingClientRect().left;
+  offsetYSimona = e.clientY - widgetSimona.getBoundingClientRect().top;
   widgetSimona.style.transition = 'none';
+  e.preventDefault();
 });
 
 document.addEventListener('mousemove', e => {
   if (!isDraggingSimona) return;
+  hasMoved = true;
+  e.preventDefault();
   widgetSimona.style.left = e.clientX - offsetXSimona + 'px';
   widgetSimona.style.top = e.clientY - offsetYSimona + 'px';
+  widgetSimona.style.bottom = 'auto';
 });
 
-document.addEventListener('mouseup', () => isDraggingSimona = false);
+document.addEventListener('mouseup', () => {
+  isDraggingSimona = false;
+});
 
 // --- DRAG WIDGET DOG ---
 const widgetDog = document.getElementById('widget-dog');
 let isDraggingDog = false, offsetXDog = 0, offsetYDog = 0;
 
-// Start widget dog on the left
 widgetDog.style.left = '30px';
 widgetDog.style.bottom = '30px';
 
 widgetDog.addEventListener('mousedown', e => {
   isDraggingDog = true;
-  offsetXDog = e.clientX - widgetDog.offsetLeft;
-  offsetYDog = e.clientY - widgetDog.offsetTop;
+  offsetXDog = e.clientX - widgetDog.getBoundingClientRect().left;
+  offsetYDog = e.clientY - widgetDog.getBoundingClientRect().top;
   widgetDog.style.transition = 'none';
+  e.preventDefault();
 });
 
 document.addEventListener('mousemove', e => {
   if (!isDraggingDog) return;
+  e.preventDefault();
   widgetDog.style.left = e.clientX - offsetXDog + 'px';
   widgetDog.style.top = e.clientY - offsetYDog + 'px';
+  widgetDog.style.bottom = 'auto';
 });
 
-document.addEventListener('mouseup', () => isDraggingDog = false);
+document.addEventListener('mouseup', () => {
+  isDraggingDog = false;
+});
 </script>
 
 </body>
